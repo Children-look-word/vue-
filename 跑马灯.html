@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+		<title>跑马灯</title>
+		<script src="lib/vue.min.js"></script>
+	</head>
+	<body>
+		<div class="app">
+			<input type="button" value="跑起来" @click="cat"/>
+			<input type="button" value="停止"  @click="stop"/>
+			<h4>{{ msg }}</h4>
+		</div>
+		<script>
+			var vm=new Vue({
+				el:".app",
+				data:{
+					msg:"我喜欢过大海，也爱过你",
+					time:null
+				},
+				methods:{
+					cat(){
+//						var that=this;
+//						=>  相当于让this 指向还是原来的
+//                 如果直接定义动画的变量 下面的方法 接收不到 所以 在数据里面定义
+						if(this.time!=null){
+							return;
+						}else{
+							this.time=setInterval(() => {
+								//获取第一个元素
+								var start=this.msg.substring(0,1);
+								//获取后面所有字符
+								var end=this.msg.substring(1);
+								//将字符串重新拼接起来
+								this.msg=end+start;
+							},200)
+						}
+						
+					},
+					stop(){
+						//清理定时器
+						clearInterval(this.time);
+						this.time=null;
+					}
+				}
+			});
+		</script>
+	</body>
+</html>

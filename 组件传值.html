@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="lib/vue.js"></script>
+	</head>
+
+	<body>
+		<div id="app">
+			<!--绑定方法  @func 自己 定义的名字-->
+			<tc :parentmsg="msg" @func='show'></tc>
+		</div>
+		<template id="ap" >
+			<div>
+				<h1>我不知道---{{ parentmsg }}</h1>
+				<input type="button"  value="你好呀" @click='myclick' />
+			</div>
+		</template>
+
+		<script>
+			var tc = {
+				template:'#ap',
+				
+				//所有props 的值 都是 父组件传递给子组件的
+				props:['parentmsg'],
+				methods:{
+					myclick(){
+						//调用自己定义的绑定的方法名字 后面也可以带参数  emit调用 触发父组件传过来的方法  可以传多个参数
+						this.$emit('func',456)
+					}
+				}
+			}
+			var vm = new Vue({
+				el: '#app',
+				data: {
+					msg:'123--父级的值'
+				},
+				methods: {
+					show(data){
+						console.log('hhhhhh----'+data);
+					}
+				},
+				components: {
+					tc
+				}
+			})
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title></title>
+  <script src="lib/vue.js"></script>
+  <style>
+  	.box{
+  		width: 20px;
+  		height: 20px;
+  		background-color: pink;
+  		border-radius: 50%;
+  	}
+  	
+  	.v-enter,
+  	.v-leave-to{
+  		opacity: 0;
+  	}
+  	
+  	.v-enter-active,
+  	.v-leave-active{
+  		transition: all 0.8s ease;
+  	}
+  </style>
+</head>
+
+<body>
+  <!-- 这是容器 -->
+  <div id="app">
+  	<input type="button" value="点击按钮" @click='flag=!flag' />
+  	
+  	<transition
+	  	@before-enter="beforeEnter"	
+	  	@enter='enter'
+	  	@after-enter='afterEnter'
+  	>
+  		<div class="box" v-show='flag'></div>
+  	</transition>
+  </div>
+  
+  <div id="ap">
+      <a href="#" @click="active='login'" >登录</a>
+      <a href="#" @click="active='register'" >注册</a>
+      
+      <transition mode='out-in'>
+      	<component :is='active'></component>
+      </transition>
+      
+  </div>
+  
+  <script>
+  	
+  	Vue.component('login',{
+  		template:'<h2>登录按钮</h2>'
+  	})
+  	
+  	Vue.component('register',{
+  		template:'<h2>注册按钮</h2>'
+  	})
+  	
+  	new Vue({
+  		el:'#ap',
+  		data:{
+  			active:'login'
+  		}
+  	})
+  	
+    new Vue({
+        el:"#app",
+        data:{
+           flag:false
+        },
+        methods:{
+            beforeEnter(el){
+            	el.style.transform='translate(0,0)';
+            },
+            enter(el,done){
+            	
+            	el.offsetWidth;
+            	
+            	el.style.transform='translate(150px,450px)';
+            	el.style.transition='all 0.8s ease' 
+            	done();
+            },
+            afterEnter(el){
+            	this.flag=!this.flag;
+            }
+        }
+    })
+  </script>
+</body>
+
+</html>

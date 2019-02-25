@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="lib/bootstrap.css"/>
+		<script src="lib/vue.js"></script>
+	</head>
+	<body>
+		<div id="app">
+			
+			
+			<tcc @func="commm"></tcc>
+			
+			<ul class="list-group" v-for='item in list' :key='item.id'>
+				<li class="list-group-item">
+				    <span class="badge">评论人:{{ item.name }}</span>
+				    {{ item.content }}
+				</li>
+			</ul>
+		</div>
+		<template id='temp'>
+			<div>
+				<div class="form-group">
+					<label>评论人:</label>
+					<input type="text" class="form-control"  v-model='name'>
+				</div>
+				<div class="form-group">
+					<label>评论内容:</label>
+					<textarea class="form-control" v-model='content'></textarea>
+				</div>
+				<div class="form-group">
+					<input type="button" class="btn btn-primary" value="发表评论" @click="postment"/>
+				</div>
+			</div>
+		</template>
+		<script>
+			var coment={
+				data(){
+					return{
+						name:'',
+						content:''
+					}
+				},
+				template:'#temp',
+				methods:{
+					postment(){
+						// 分析：发表评论的业务逻辑
+				          // 1. 评论数据存到哪里去？？？   存放到了 localStorage 中  localStorage.setItem('cmts', '')
+				          // 2. 先组织出一个最新的评论数据对象
+				          // 3. 想办法，把 第二步中，得到的评论对象，保存到 localStorage 中：
+				          //  3.1 localStorage 只支持存放字符串数据， 要先调用 JSON.stringify 
+				          //  3.2 在保存 最新的 评论数据之前，要先从 localStorage 获取到之前的评论数据（string）， 转换为 一个  数组对象， 然后，把最新的评论， push 到这个数组
+				          //  3.3 如果获取到的 localStorage 中的 评论字符串，为空不存在， 则  可以 返回一个 '[]'  让 JSON.parse 去转换
+				          //  3.4  把 最新的  评论列表数组，再次调用 JSON.stringify 转为  数组字符串，然后调用 localStorage.setItem()
+
+						//先获取数据
+						var comment={id:Date.now(),name:this.name,content:this.content}
+						//将数据转换成数组
+						console.log(localStorage.getItem('cmts'));
+						var list=JSON.parse(localStorage.getItem('cmts')||'[]');
+						console.log(list);
+						
+						list.unshift(comment)
+						
+						localStorage.setItem('cmts',JSON.stringify(list))
+						
+						this.name=this.content=''
+						
+						this.$emit('func')
+					}	
+				}
+			}
+			
+			
+			var vm=new Vue({
+				el:'#app',
+				data:{
+					list:[
+						{id:Date.now(),name:'盖伦',content:'德玛西亚万岁'},
+						{id:Date.now(),name:'小鱼人',content:'要我吃掉他们'},
+						{id:Date.now(),name:'艾希',content:'胜利女神在微笑'},
+						{id:Date.now(),name:'猴子',content:'俺老孙来也'}
+					]
+				},
+				created(){
+					this.commm()
+				},
+				methods:{
+					commm(){
+						var list=JSON.parse(localStorage.getItem('cmts')||'[]')
+						this.list=list
+					}
+				},
+				components:{
+					'tcc':coment
+				}
+			})
+		</script>
+	</body>
+</html>

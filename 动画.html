@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>动画</title>
+		<link rel="stylesheet" type="text/css" href="lib/animate.css"/>
+		<script src="lib/vue.js"></script>
+	</head>
+	<body>
+		<div id="app">
+			<!--duration 设置动画的 时长  在 动画的时候 都要 加上 起始动画的 初始类 animated-->
+			<input type="button" value="切换" @click="flag=!flag" />
+			<transition enter-active-class='animated fadeIn'  leave-active-class='animated bounceOut' :duration='2000'>
+				<h3 v-if='flag'>曾经跨过山和大海</h3>
+			</transition>
+			<hr>
+			<input type="button" value="切换" @click='flag1=!flag1' />
+			<transition enter-active-class='animated fadeIn'  leave-active-class='animated bounceOut' :duration='2000' >
+				<h6 v-if='flag1'>曾经跨过山和大海</h6>
+			</transition>
+		</div>
+		<script>
+			var vm=new Vue({
+				el:'#app',
+				data:{
+					flag:false,
+					flag1:false
+				},
+				methods:{
+					
+				}
+			});
+			
+			
+		</script>
+	</body>
+</html>
