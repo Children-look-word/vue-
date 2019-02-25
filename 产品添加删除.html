@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+		<title>删除添加</title>
+		<link rel="stylesheet" href="lib/bootstrap.css" />
+		<script src="lib/vue.js"></script>
+	</head>
+
+	<body>
+		<div class="app">
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<h3 class="panel-title">添加品牌</h3>
+				</div>
+				<div class="panel-body form-inline">
+					<div class="form-group">
+						<label>Id:</label>
+						<input type="text" class="form-control" v-model="id" />
+					</div>
+					<div class="form-group">
+						<label>Name:</label>
+						<input type="text" class="form-control" v-model="name" @keyup.enter="add"/>
+					</div>
+					<button type="submit" class="btn btn-primary" @click="add">添加</button>
+					<div class="form-group">
+						<label>搜索名称关键字:</label>
+						<input type="text" class="form-control" v-model="keyword" v-focus />
+					</div>
+				</div>
+			</div>
+			<table class="table table-bordered table-hover table-striped">
+				<thead>
+					<tr>
+						<th>id</th>
+						<th>品牌名称</th>
+						<th>添加时间</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="(item,index) in search(keyword)" :key="item.id">
+						<td>{{item.id}}</td>
+						<td>{{item.name}}</td> <!--// item.name | defter(过滤器的名称)-->
+						<td>{{item.time}}</td>
+						<td>
+							<!--prevent 阻止默认行为-->
+							<a href="" @click.prevent="dele(index)">删除</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<script>
+		//定义全局过滤器      函数里面第一参数必须是前面的数据     
+//		Vue.filter("过滤器的名字",function("定义的过滤器数据"){
+//			
+//		})
+		
+		
+		//定义键盘按键修饰符  想要哪个键 就把那个键的值定义给键
+		Vue.config.keyCodes.f2=113;
+		
+		//自定义指令
+		//注册名为v-focus`的全局自定义指令
+		//定义指令的时候 可以 不带 V 用 自己 v-指令名称
+		//el 指令绑定的元素。这可以用于直接操作DOM
+		Vue.directive("focus",{
+			//当指令首次绑定到元素时，只调用一次。这是您可以进行一次性设置工作的地方。
+			//在每个函数中 第一个参数 永远是 el
+			bind:function(el){
+				
+			},
+			//当绑定元素已插入其父节点时调用（这仅保证父节点存在，不一定保证在文档中）。
+			inserted:function(el){
+				el.focus();
+			},
+			//在包含组件的VNode已更新之后调用，但可能在其子级已更新之前调用。指令的值可能已更改，也可能未更改，
+			//但您可以通过比较绑定的当前值和旧值来跳过不必要的更新（请参阅下面的挂钩参数）。
+			update:function(){
+				
+			}
+		});
+		
+			var vm = new Vue({
+				el: ".app",
+				data: {
+					id:"",
+					name:"",
+					keyword:"",
+					list: [{
+						id: 1,
+						name: "阿士顿马丁",
+						time: getTime()
+					}, {
+						id: 2,
+						name: "宝马",
+						time: getTime()
+					}, {
+						id: 3,
+						name: "凯迪拉克",
+						time: getTime()
+					}]
+				},
+				methods: {
+					add(){
+						var car={id:this.id,name:this.name,time:getTime()};
+						this.list.push(car);
+						this.id=this.name="";
+					},
+					dele(index){
+//						var that=this;
+//						that.list.some(function(item,i){					
+//							if(item.id == id){
+//								that.list.splice(i,1);
+//								//在some方法中 如果返回 turn 就会立即终止这个数组的循环
+//								return true;
+//							}
+//						})
+						this.list.splice(index,1);
+//
+//						var index = this.list.findIndex(item => {
+//								if (item.id == id) {
+//								        return true;
+//								}
+//					 	});
+//					   this.list.splice(index,1);
+					},
+					search(keyword){
+						//定义一个新数组
+						var newList=[];
+						this.list.forEach(function(item) {
+							if(item.name.indexOf(keyword)!=-1){
+								newList.push(item);
+							}
+						})
+						return newList;
+					}
+				}
+			});
+
+			function getTime() {
+				var day = new Date();
+				var year = day.getFullYear();
+				//padStart 在一个字符前面添加一字符串 数字 或者字符
+				var month = (day.getMonth() + 1).toString().padStart(2,"0");
+				var dat = day.getDate().toString().padStart(2,"0");
+				var hours = day.getHours().toString().padStart(2,"0");
+				var minitues = day.getMinutes().toString().padStart(2,"0");
+				var second = day.getSeconds().toString().padStart(2,"0");
+				return year +"-" + month + "-" + dat + " " + hours + ":" + minitues + ":" + second;
+			}	
+		</script>
+	</body>
+
+</html>
